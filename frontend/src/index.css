@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn_duck {
+    @apply btn;
+
+    @apply rounded-full bg-sky-400 text-white font-bold text-lg;
+
+    @apply border-4 border-yellow-400;
+
+    @apply shadow-md;
+
+    @apply hover:bg-sky-600 hover:border-yellow-300 transition-colors;
+
+    @apply focus:outline-none;
+  }
+}
+
+.menu-burger-perso li:hover {
+    @apply bg-yellow-300 text-black;
+}
