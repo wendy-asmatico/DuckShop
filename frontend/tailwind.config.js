@@ -13,6 +13,9 @@ export default {
         cyan: "#00C2FF",
         blanc: "#ffffff",
         neutral: "#005678",
+        error: "#cd3737ff",
+        sombre: "#cd3737ff",
+
       },
       keyframes: {
         floatUp: {
@@ -31,6 +34,16 @@ export default {
   plugins: [require("daisyui")],
   daisyui: {
     themes: [
+      {
+        mytheme: {
+          "primary": "#00C2FF",  // Ton cyan
+          "secondary": "#005678", // Ton neutral
+          "accent": "#37cdbe",
+          "neutral": "#3d4451",
+          "base-100": "#ffffff",
+          "warning": "#FFD700", 
+        },
+      },
     ],
   },
 }

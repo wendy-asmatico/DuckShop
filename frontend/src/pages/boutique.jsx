@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "../assets/css/boutique.css";
 
 function Boutique() {
   const [products, setProducts] = useState([]);
@@ -12,66 +13,56 @@ function Boutique() {
       .catch((err) => setError(err.toString()));
   }, []);
 
-  // --- LOGIQUE DE TRI ---
-  // On suppose que les produits sont reçus dans l'ordre (ID 1, 2, 3...).
-  // On prend les 5 derniers pour le carousel (slice(-5)) et on inverse pour voir le plus récent en premier
-  const nouveauxCanards = products.slice(-5).reverse();
-  // On prend tout le reste (du début jusqu'aux 5 derniers) pour le catalogue
-  const catalogueCanards = products.slice(0, -5);
+  const nouveauxCanards = products.slice(-4).reverse();
+  const catalogueCanards = products.slice(0, -4);
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+    <div className="boutique-container">
       
-      {/* --- SECTION 1 : LE CAROUSEL (NOUVEAUTÉS) --- */}
-      <h1>🔥 Les Derniers Arrivés</h1>
+      {error && <p style={{ color: "red", textAlign: "center" }}>Erreur : {error}</p>}
+      {products.length === 0 && !error && <p style={{ textAlign: "center", color: "#0277bd" }}>Chargement de la mare...</p>}
+
+      {/* --- CAROUSEL --- */}
+      {nouveauxCanards.length > 0 && (
+        <>
+          <h1 className="boutique-title">💦 Les Nouveautés</h1>
+          
+          <div className="carousel-container">
+            {nouveauxCanards.map((p) => (
+              <Link key={p.id} to={`/product/${p.id}`} className="product-link" style={{ minWidth: "260px" }}>
+                <div className="card_product">
+                   <div className="badge-new">New!</div>
+                  <img 
+                    src={p.img_principal} 
+                    alt={`Nouveauté : ${p.name}`} 
+                    className="card-img"
+                  />
+                  <div className="card-content">
+                      <h3 className="card-title">{p.name}</h3>
+                      <strong className="card-price new">{p.price} €</strong>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* --- GRILLE --- */}
+      <h1 className="boutique-title secondary">🦆 Le Grand Bain</h1>
       
-      <div style={{ 
-          display: "flex", 
-          overflowX: "scroll", // Permet de scroller horizontalement
-          gap: "20px", 
-          paddingBottom: "20px",
-          marginBottom: "40px",
-          borderBottom: "2px solid #eee"
-      }}>
-        {nouveauxCanards.map((p) => (
-          <Link key={p.id} to={`/product/${p.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-            <div style={{ minWidth: "250px", border: "1px solid #ddd", borderRadius: "10px", padding: "10px" }}>
-               {/* Image mise en avant */}
-              <img 
-                src={p.img_principal} 
-                alt={`Nouveauté : ${p.name}`} 
-                style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "8px" }} 
-              />
-              <h3>{p.name}</h3>
-              <strong style={{ color: "green" }}>Nouveau ! {p.price} €</strong>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-
-      {/* --- SECTION 2 : LE CATALOGUE (LE RESTE) --- */}
-      <h1>Le Reste de la Mare</h1>
-      
-      {error && <p style={{ color: "red" }}>Erreur : {error}</p>}
-      {products.length === 0 && !error && <p>Chargement...</p>}
-
-      <div style={{ 
-        display: "grid", 
-        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", 
-        gap: "20px" 
-      }}>
+      <div className="grid-container">
         {catalogueCanards.map((p) => (
-          <Link key={p.id} to={`/product/${p.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-            <div style={{ border: "1px solid #ddd", borderRadius: "8px", overflow: "hidden" }}>
+          <Link key={p.id} to={`/product/${p.id}`} className="product-link">
+            <div className="card_product">
               <img 
                 src={p.img_principal} 
                 alt={`Produit : ${p.name}`} 
-                style={{ width: "100%", height: "150px", objectFit: "cover" }} 
+                className="card-img" 
               />
-              <div style={{ padding: "10px" }}>
-                <h4>{p.name}</h4>
-                <span>{p.price} €</span>
+              <div className="card-content">
+                <h4 className="card-title">{p.name}</h4>
+                <span className="card-price">{p.price} €</span>
               </div>
             </div>
           </Link>
