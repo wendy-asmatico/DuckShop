@@ -13,7 +13,19 @@ export default {
         cyan: "#00C2FF",
         blanc: "#ffffff",
         neutral: "#005678",
+      },
+      keyframes: {
+        floatUp: {
+          '0%': { transform: 'translateY(0) scale(0.8)', opacity: '0' },
+          '10%': { opacity: '0.7' },
+          '90%': { opacity: '0.6' },
+          '100%': { transform: 'translateY(-120vh) scale(1.2)', opacity: '0' }, // -120vh = monte plus haut que l'écran
+        }
+      },
+      animation: {
+        floatUp: 'floatUp linear infinite', // J'ai enlevé la durée ici pour la gérer dans le JSX
       }
+
     },
   },
   plugins: [require("daisyui")],

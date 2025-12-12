@@ -38,6 +38,8 @@ function Product() {
 }
 
 
+
+
   return (
     <div className="product-card">
       <h1>{product.name}</h1>

@@ -20,20 +20,20 @@ function NavBar() {
     localStorage.removeItem("user");
     localStorage.removeItem("cart");
     setUser(null);
-    navigate("/login");
+    navigate("/auth");
   }
 
   return (
-    <div class="navbar bg-base-100 shadow-md">
+    <div class="navbar bg-gradient-to-b from-sky-300 via-cyan-200 to-sky-100 shadow-md">
   <div class="flex-1">
-    <a href="../pages/home.jsx">
+    <Link to="/">
       <img src="../img/logo_duckstore.png" alt="logo representant un canard" class="h-24"></img>
-    </a>
+    </Link>
   </div>
 
   <div class="flex-none hidden lg:flex">
     <ul class="menu menu-horizontal px-1 gap-x-6">
-        <Link to="/" class="btn_duck">Boutique</Link>
+        <Link to="/boutique" class="btn_duck">Boutique</Link>
         <Link to="/cart" class="btn_duck" > <img width="26" height="26" src="https://img.icons8.com/pulsar-line/96/ffd700/shopping-cart.png" alt="shopping-cart"/> Panier</Link>
         <div className="navbar-right menu-horizontal gap-x-6 items-center">
         {user ? (
@@ -44,7 +44,7 @@ function NavBar() {
             <button onClick={handleLogout} class="btn"><img width="26" height="26" src="https://img.icons8.com/pulsar-line/96/FA5252/exit.png" alt="exit"/></button>
           </>
         ) : (
-          <Link to="/login" class="btn_duck">S'identifier</Link>
+          <Link to="/auth" class="btn_duck">S'identifier</Link>
         )}
       </div>
     </ul>
@@ -56,7 +56,7 @@ function NavBar() {
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
       </label>
       <ul tabindex="0" class="menu-burger-perso menu menu-xl dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-2xl w-52 border-4 border-yellow-400">
-        <li><Link to="/">Boutique</Link></li>
+        <li><Link to="/boutique">Boutique</Link></li>
         <li><Link to="/cart">Panier</Link></li>
         <li><div className="navbar-right menu-horizontal gap-x-6 items-center">
         {user ? (

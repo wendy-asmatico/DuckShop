@@ -4,12 +4,13 @@ const fs = require('fs'); //lecture écriture des fichiers JSON
 const path = require('path');
 const bcrypt = require("bcrypt");
 
-
 const app = express();
 const port = 3001;
 
 app.use(cors());
 app.use(express.json());
+
+const SECRET_KEY = "canard_vador_super_secret_key";
 
 // Chemin vers le fichier JSON des produits
 const PRODUCTS_FILE = path.join(__dirname, 'product.json');
@@ -43,6 +44,15 @@ function readUsers() {
   } catch (err) {
     console.error('Erreur lecture users.json :', err);
     return [];
+  }
+}
+
+// 🔹 Écrire les utilisateurs dans le fichier JSON
+function writeUsers(users) {
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Erreur écriture users.json :', err);
   }
 }
 
@@ -94,6 +104,10 @@ app.post('/product', (req, res) => {
   res.status(201).json(newProduct);
 });
 
+// =======================
+//   ROUTES LOGIN
+// =======================
+
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -120,6 +134,10 @@ app.post('/login', async (req, res) => {
     user: { id: user.id, email: user.email, name: user.name }
   });
 });
+
+// =======================
+//   ROUTES PANIER
+// =======================
 
 app.post('/cart/:userId', (req, res) => {
   const users = readUsers();
@@ -170,4 +188,53 @@ app.post("/cart/:userId", (req, res) => {
 
 app.listen(port, () => {
   console.log("API running on http://localhost:" + port);
+});
+
+// =======================
+//   ROUTES AUTH (INSCRIPTION)
+// =======================
+
+app.post('/register', async (req, res) => {
+  // 1. Récupérer les données envoyées par le React (le Frontend)
+  const { email, password, name } = req.body;
+
+  // 2. Validation basique : est-ce qu'il manque des infos ?
+  if (!email || !password || !name) {
+    return res.status(400).json({ ok: false, message: "Tous les champs sont obligatoires" });
+  }
+
+  // 3. Lire la liste actuelle des utilisateurs
+  const users = readUsers();
+
+  // 4. Vérifier si l'email existe déjà (On ne veut pas de doublons !)
+  const userExists = users.find(u => u.email === email);
+  if (userExists) {
+    return res.status(400).json({ ok: false, message: "Cet email est déjà utilisé" });
+  }
+
+  // 5. HACHAGE DU MOT DE PASSE (Sécurité)
+  // On utilise bcrypt pour transformer "secret" en quelque chose comme "$2b$10$X8f..."
+  // Le "10" est le "salt rounds" (la complexité du cryptage)
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // 6. Créer le nouvel objet utilisateur
+  const newUser = {
+    id: Date.now(), // On utilise l'heure exacte comme ID unique simple
+    email: email,
+    name: name,
+    password: hashedPassword, // On stocke la version cryptée !
+    cart: [] // Le panier commence vide
+  };
+
+  // 7. Ajouter à la liste et sauvegarder dans le fichier
+  users.push(newUser);
+  writeUsers(users); // On utilise notre nouvelle fonction helper
+
+  // 8. Répondre au Frontend que tout est OK
+  // On renvoie l'utilisateur créé (sans le mot de passe pour la sécurité)
+  res.status(201).json({ 
+    ok: true, 
+    message: "Utilisateur créé avec succès",
+    user: { id: newUser.id, email: newUser.email, name: newUser.name }
+  });
 });
